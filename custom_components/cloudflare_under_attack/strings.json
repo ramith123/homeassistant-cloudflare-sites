@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Cloudflare Under Attack",
+        "description": "Enter your Cloudflare API token. The token needs Zone:Read, Zone Settings:Read, and Zone Settings:Edit permissions.\n\n[Create an API token](https://dash.cloudflare.com/profile/api-tokens)",
+        "data": {
+          "api_token": "API Token"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to Cloudflare. Check your API token and network connection.",
+      "no_zones": "No zones found on this Cloudflare account."
+    },
+    "abort": {
+      "already_configured": "This Cloudflare account is already configured."
+    }
+  },
+  "entity": {
+    "switch": {
+      "under_attack_mode": {
+        "name": "Under Attack Mode"
+      }
+    },
+    "sensor": {
+      "security_level": {
+        "name": "Security Level"
+      }
+    }
+  }
+}

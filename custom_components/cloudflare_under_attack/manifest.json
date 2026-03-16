@@ -1,0 +1,10 @@
+{
+  "domain": "cloudflare_under_attack",
+  "name": "Cloudflare Under Attack",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/your-repo/homeassistant-cloudflare-sites",
+  "iot_class": "cloud_polling",
+  "requirements": ["cloudflare>=4.0.0"],
+  "version": "1.0.0"
+}
