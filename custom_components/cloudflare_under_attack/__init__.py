@@ -27,7 +27,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: CloudflareConfigEntry) -
 
     # Fetch all zones on the account
     zones_response = await client.zones.list()
-    zones = [{"id": z.id, "name": z.name} for z in zones_response]
+    zones = [{"id": z.id, "name": z.name} for z in zones_response.result]
 
     coordinator = CloudflareUnderAttackCoordinator(hass, client, zones)
     await coordinator.async_config_entry_first_refresh()

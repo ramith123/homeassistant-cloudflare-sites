@@ -43,7 +43,7 @@ class CloudflareUnderAttackConfigFlow(ConfigFlow, domain=DOMAIN):
             try:
                 client = AsyncCloudflare(api_token=token)
                 zones_response = await client.zones.list()
-                zones = list(zones_response)
+                zones = list(zones_response.result)
             except (APIError, Exception) as err:
                 _LOGGER.error("Failed to connect to Cloudflare: %s", err)
                 errors["base"] = "cannot_connect"
