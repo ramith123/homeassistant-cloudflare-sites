@@ -35,7 +35,7 @@ class CloudflareUnderAttackSwitch(
     """Switch to toggle Cloudflare Under Attack mode for a zone."""
 
     _attr_has_entity_name = True
-    _attr_translation_key = "under_attack_mode"
+    _attr_name = "Under Attack Mode"
 
     def __init__(
         self,

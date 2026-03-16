@@ -35,7 +35,7 @@ class CloudflareSecurityLevelSensor(
     """Sensor showing the current Cloudflare security level for a zone."""
 
     _attr_has_entity_name = True
-    _attr_translation_key = "security_level"
+    _attr_name = "Security Level"
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_options = SECURITY_LEVELS
 
