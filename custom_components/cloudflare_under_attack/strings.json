@@ -14,7 +14,7 @@
       "no_zones": "No zones found on this Cloudflare account."
     },
     "abort": {
-      "already_configured": "This Cloudflare account is already configured."
+      "Already Configured": "This Cloudflare account is already configured."
     }
   },
   "entity": {

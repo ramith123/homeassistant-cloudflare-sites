@@ -100,7 +100,7 @@ class CloudflareUnderAttackCoordinator(DataUpdateCoordinator[dict[str, Cloudflar
             await self.client.zones.settings.edit(
                 zone_id=zone_id,
                 setting_id="security_level",
-                body={"value": level},
+                value=level,
             )
         except APIError as err:
             raise UpdateFailed(

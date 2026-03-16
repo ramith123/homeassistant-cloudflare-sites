@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -36,6 +36,7 @@ class CloudflareSecurityLevelSensor(
 
     _attr_has_entity_name = True
     _attr_translation_key = "security_level"
+    _attr_device_class = SensorDeviceClass.ENUM
     _attr_options = SECURITY_LEVELS
 
     def __init__(
