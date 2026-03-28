@@ -104,7 +104,7 @@ class CloudflareUnderAttackCoordinator(DataUpdateCoordinator[dict[str, Cloudflar
             rules: dict[str, CloudflareRuleData] = {}
             try:
                 rulesets_response = await self.client.rulesets.list(zone_id=zone_id)
-                for rs in rulesets_response:
+                for rs in rulesets_response.result:
                     if rs.phase == WAF_CUSTOM_RULES_PHASE:
                         full_ruleset = await self.client.rulesets.get(
                             ruleset_id=rs.id, zone_id=zone_id
@@ -155,11 +155,15 @@ class CloudflareUnderAttackCoordinator(DataUpdateCoordinator[dict[str, Cloudflar
         self, zone_id: str, ruleset_id: str, rule_id: str, enabled: bool
     ) -> None:
         """Enable or disable a WAF rule and refresh data."""
+        rule_data = self.data[zone_id].rules[rule_id]
         try:
             await self.client.rulesets.rules.edit(
                 rule_id=rule_id,
                 ruleset_id=ruleset_id,
                 zone_id=zone_id,
+                action=rule_data.action,
+                expression=rule_data.expression,
+                description=rule_data.description,
                 enabled=enabled,
             )
         except APIError as err:
