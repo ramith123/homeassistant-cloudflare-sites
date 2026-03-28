@@ -17,9 +17,23 @@ from .const import (
     DEFAULT_SECURITY_LEVEL,
     DOMAIN,
     SECURITY_LEVEL_UNDER_ATTACK,
+    WAF_CUSTOM_RULES_PHASE,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+@dataclass
+class CloudflareRuleData:
+    """Data for a single Cloudflare WAF rule."""
+
+    rule_id: str
+    ruleset_id: str
+    zone_id: str
+    description: str
+    action: str
+    expression: str
+    enabled: bool
 
 
 @dataclass
@@ -30,6 +44,7 @@ class CloudflareZoneData:
     zone_name: str
     security_level: str
     previous_security_level: str
+    rules: dict[str, CloudflareRuleData]
 
 
 @dataclass
@@ -85,11 +100,38 @@ class CloudflareUnderAttackCoordinator(DataUpdateCoordinator[dict[str, Cloudflar
 
             previous = self._previous_levels.get(zone_id, DEFAULT_SECURITY_LEVEL)
 
+            # Fetch WAF custom rules for this zone
+            rules: dict[str, CloudflareRuleData] = {}
+            try:
+                rulesets_response = await self.client.rulesets.list(zone_id=zone_id)
+                for rs in rulesets_response:
+                    if rs.phase == WAF_CUSTOM_RULES_PHASE:
+                        full_ruleset = await self.client.rulesets.get(
+                            ruleset_id=rs.id, zone_id=zone_id
+                        )
+                        if full_ruleset.rules:
+                            for rule in full_ruleset.rules:
+                                rules[rule.id] = CloudflareRuleData(
+                                    rule_id=rule.id,
+                                    ruleset_id=rs.id,
+                                    zone_id=zone_id,
+                                    description=rule.description or "",
+                                    action=rule.action or "",
+                                    expression=rule.expression or "",
+                                    enabled=rule.enabled if rule.enabled is not None else True,
+                                )
+                        break
+            except APIError as err:
+                _LOGGER.warning(
+                    "Error fetching WAF rules for %s: %s", zone_name, err
+                )
+
             data[zone_id] = CloudflareZoneData(
                 zone_id=zone_id,
                 zone_name=zone_name,
                 security_level=security_level,
                 previous_security_level=previous,
+                rules=rules,
             )
 
         return data
@@ -107,4 +149,21 @@ class CloudflareUnderAttackCoordinator(DataUpdateCoordinator[dict[str, Cloudflar
                 f"Error setting security level for zone {zone_id}: {err}"
             ) from err
 
+        await self.async_request_refresh()
+
+    async def async_set_rule_enabled(
+        self, zone_id: str, ruleset_id: str, rule_id: str, enabled: bool
+    ) -> None:
+        """Enable or disable a WAF rule and refresh data."""
+        try:
+            await self.client.rulesets.rules.edit(
+                rule_id=rule_id,
+                ruleset_id=ruleset_id,
+                zone_id=zone_id,
+                enabled=enabled,
+            )
+        except APIError as err:
+            raise UpdateFailed(
+                f"Error setting rule {rule_id} enabled={enabled} for zone {zone_id}: {err}"
+            ) from err
         await self.async_request_refresh()

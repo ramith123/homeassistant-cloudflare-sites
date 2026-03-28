@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Cloudflare Under Attack",
-        "description": "Enter your Cloudflare API token. The token needs Zone:Read, Zone Settings:Read, and Zone Settings:Edit permissions.\n\n[Create an API token](https://dash.cloudflare.com/profile/api-tokens)",
+        "description": "Enter your Cloudflare API token. The token needs Zone:Read, Zone Settings:Read, Zone Settings:Edit, Zone WAF:Read, and Zone WAF:Edit permissions.\n\n[Create an API token](https://dash.cloudflare.com/profile/api-tokens)",
         "data": {
           "api_token": "API Token"
         }

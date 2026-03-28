@@ -1,0 +1,8 @@
+{
+  "name": "homeassistant-cloudflare-sites",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "scp -r -P 22 custom_components/cloudflare_under_attack pi@192.168.86.87:/home/pi/HA/new-config/custom_components/"
+  }
+}
